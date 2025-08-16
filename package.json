@@ -1,18 +1,18 @@
 {
   "name": "geolandhub",
-  "version": "1.0.0",
   "private": true,
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "lucide-react": "^0.378.0",
-    "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "shpjs": "^4.0.4"
+    "leaflet": "^1.9.4",
+    "shpjs": "^4.0.4",
+    "lucide-react": "^0.378.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
