@@ -1,3 +1,5 @@
+import GeoLandHubMockup from "./GeoLandHubMockup.jsx";
+
 export default function App() {
-  return <h1>Hello GeoLandHub</h1>;
+  return <GeoLandHubMockup />;
 }
