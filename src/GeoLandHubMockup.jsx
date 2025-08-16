@@ -148,6 +148,19 @@ const OSMBlock = () => {
   return <div id="map" style={{ height: "100vh", width: "100%" }} />;
 };
 
+export default function App() {
+  return (
+    <div>
+      <OSMBlock />
+    </div>
+  );
+}
+
+L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', 
+  { attribution: 'Tiles &copy; Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, ...' }
+).addTo(map);
+
       // show pointer coordinates
       m.on('mousemove', (e)=> setCoords([e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6)]));
       m.on('click', (e)=> setCoords([e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6)]));
@@ -248,19 +261,6 @@ const OSMBlock = () => {
       </div>
     );
   };
-  // --- Google Maps loader state (for Earth background) ---
-  const [gmReady, setGmReady] = useState(false);
-
-  // dynamic loader
-  const loadGoogle = () => new Promise((resolve, reject) => {
-    if (window.google && window.google.maps) return resolve();
-    const s = document.createElement('script');
-    s.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&v=quarterly&loading=async";
-    s.async = true; s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = (e) => reject(e);
-    document.head.appendChild(s);
-  });
 
   const EarthBlock = ({lang}) => {
     const [mode, setMode] = useState('satellite'); // 'satellite' | 'roadmap'
