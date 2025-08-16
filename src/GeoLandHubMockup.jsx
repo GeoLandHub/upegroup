@@ -125,66 +125,28 @@ export default function GeoLandHubMockup() {
     document.head.appendChild(l);
   }, []);
 
-  // --- Google Maps loader state (for Earth background) ---
-  const [gmReady, setGmReady] = useState(false);
+// ===== OSM (Leaflet) free background block =====
+const OSMBlock = () => {
+  React.useEffect(() => {
+    // สร้าง map
+    const map = L.map("map", {
+      center: [13.736, 100.523], // พิกัดเริ่มต้น (กรุงเทพ)
+      zoom: 6,
+    });
 
-  // dynamic loader
-  const loadGoogle = () => new Promise((resolve, reject) => {
-    if (window.google && window.google.maps) return resolve();
-    const s = document.createElement('script');
-    s.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&v=quarterly&loading=async";
-    s.async = true; s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = (e) => reject(e);
-    document.head.appendChild(s);
-  });
+    // ใช้ tile ของ OSM
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
-  // ===== OSM (Leaflet) free background block =====
-  const OSMBlock = ({lang}) => {
-    const [geojson, setGeojson] = useState(null);
-    const [coords, setCoords] = useState(null);
+    return () => map.remove();
+  }, []);
 
-    // Lazy-load Leaflet & shpjs only on client
-    const [L, setL] = useState(null);
-    const [shpLib, setShpLib] = useState(null);
-    const [map, setMap] = useState(null);
-    const [base, setBase] = useState('osm'); // 'osm' | 'maptiler'
-
-    React.useEffect(()=>{
-      (async()=>{
-        if (!L) {
-          const leaflet = await import('leaflet');
-          setL(leaflet);
-        }
-        if (!shpLib) {
-          try {
-            const mod = await import('shpjs');
-            setShpLib(mod.default || mod);
-          } catch {}
-        }
-      })();
-    },[]);
-
-    const initMap = (el) => {
-      if (!el || map || !L) return;
-      const m = L.map(el).setView([13.7563, 100.5018], 12);
-
-      const applyBase = () => {
-        if (m.__base) { m.removeLayer(m.__base); m.__base = null; }
-        if (base === 'osm') {
-          m.__base = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
-          }).addTo(m);
-        } else if (base === 'maptiler') {
-          const key = window.MAPTILER_KEY || 'YOUR_MAPTILER_KEY';
-          m.__base = L.tileLayer(`https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=${key}`, {
-            maxZoom: 20,
-            attribution: '&copy; MapTiler & OpenStreetMap contributors'
-          }).addTo(m);
-        }
-      };
-      applyBase();
+  // container ที่จะวาดแผนที่
+  return <div id="map" style={{ height: "100vh", width: "100%" }} />;
+};
 
       // show pointer coordinates
       m.on('mousemove', (e)=> setCoords([e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6)]));
